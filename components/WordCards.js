@@ -33,7 +33,7 @@
             </View>
             <View style={styles.property}>
               <View style={styles.propertyOne}><Text style={styles.propertyText}>Noun</Text></View>
-              <View style={styles.propertyTwo}><Text style={styles.propertyText}>Letter</Text></View>
+              <View style={styles.propertyTwo}><Text style={styles.propertyText}>W</Text></View>
             </View>
             <View style={styles.wordBrief}>
               <Text style={styles.wordBriefText}>This is a brief about the word searched</Text>
