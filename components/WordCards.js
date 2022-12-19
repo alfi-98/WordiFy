@@ -7,7 +7,7 @@
  * @flow strict-local
  */
  import Icon from 'react-native-vector-icons/FontAwesome';
- import React, {useState} from 'react';
+ import React, {useState,useEffect} from 'react';
  import type {Node} from 'react';
  import {
    SafeAreaView,
@@ -19,24 +19,66 @@
    View,
    TouchableOpacity,
    Image,
-   TextInput
+   TextInput, 
+   ActivityIndicator
  } from 'react-native';
  
- const WordCards = () => {
-   const [search, setSearch] = useState(null);
+ const WordCards = (props) => {
+   console.log("props: ",props.searchedWord)
+
+   const [words, setWords] = useState(null);
+   const [isLoading, setLoading] = useState(false);
+   console.log('words', words);
+   
+    useEffect( () => {
+
+      const getWord  = async () => {
+        const res = await fetch(`https://owlbot.info/api/v4/dictionary/`+ props.searchedWord, {
+          method: 'GET',
+          headers: {
+              "Authorization": 'Token cf5dd14b9e30388005dee0f08e249f51fe7099e3',
+              "Content-Type" :'application/json'
+            }
+        })
+        setLoading(true);
+        const json = await res.json()
+        setWords(json)
+        setLoading(false);
+  
+      }
+        getWord()
+      
+      
+    }, [props?.searchedWord]);
+
+   const getContent = () => {
+     return <ActivityIndicator size="large"/>
+   }
    return (
      <View style={styles.container}>
          <View style={styles.items}>
            <View style={styles.itemsTop}>
-              <Text style={styles.wordName}>Word Name</Text>
-              <TouchableOpacity style={ styles.dot}><Image style={ styles.dotIcon} source={require('./images/dot.png')} /></TouchableOpacity>
+             {!isLoading &&  (<Text>
+               {words?.word}
+               
+               </Text> : 'Loading...')}
+            <TouchableOpacity style={ styles.dot}><Image style={ styles.dotIcon} source={require('./images/dot.png')} /></TouchableOpacity>
             </View>
             <View style={styles.property}>
-              <View style={styles.propertyOne}><Text style={styles.propertyText}>Noun</Text></View>
-              <View style={styles.propertyTwo}><Text style={styles.propertyText}>W</Text></View>
+              <View style={styles.propertyOne}><Text style={styles.propertyText}>
+                {words?.definitions[0].type}
+                
+                </Text></View>
+              <View style={styles.propertyTwo}><Text style={styles.propertyText}>
+                {words?.pronunciation}
+                
+                </Text></View>
             </View>
             <View style={styles.wordBrief}>
-              <Text style={styles.wordBriefText}>This is a brief about the word searched</Text>
+              <Text style={styles.wordBriefText}>
+                {words?.definitions[0].definition}
+                
+                </Text>           
             </View>
          </View>
      </View>
@@ -48,7 +90,7 @@
         width: 350,
         height: 150,
         backgroundColor: 'white',
-        margin: 30,
+        marginTop: 10,
         borderRadius: 10,
         shadowOffset: {width: 0, height: 0},  
         shadowColor: '#171717',  
