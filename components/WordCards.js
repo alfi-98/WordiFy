@@ -7,7 +7,7 @@
  * @flow strict-local
  */
  import Icon from 'react-native-vector-icons/FontAwesome';
- import React, {useState,useEffect} from 'react';
+ import React, {useState,useEffect, useRef} from 'react';
  import type {Node} from 'react';
  import {
    SafeAreaView,
@@ -22,15 +22,16 @@
    TextInput, 
    ActivityIndicator
  } from 'react-native';
- 
+ import RBSheet from "react-native-raw-bottom-sheet";
  const WordCards = (props) => {
    console.log("props: ",props.searchedWord)
 
-   const [words, setWords] = useState(null);
+   const [words, setWords] = useState(props.searchedWord);
    const [isLoading, setLoading] = useState(false);
    console.log('words', words);
-   
-    useEffect( () => {
+   const refRBSheet = useRef();
+
+   useEffect( () => {
 
       const getWord  = async () => {
         const res = await fetch(`https://owlbot.info/api/v4/dictionary/`+ props.searchedWord, {
@@ -51,9 +52,34 @@
       
     }, [props?.searchedWord]);
 
-   const getContent = () => {
-     return <ActivityIndicator size="large"/>
-   }
+    const BottomSheet = () => {
+      return(
+        
+        <View style={styles.bottomSheet}>
+          <Text style={styles.bsEmoji}> {words?.definitions[0].emoji} </Text>
+          <Text style={styles.bsWord}>{words?.word}</Text>
+          <View style={styles.bsProps}>
+            <View style={styles.bsType}>
+              <Text style={styles.typeText}>{words?.definitions[0].type}</Text>
+            </View>
+            <View style={styles.bsPronunciation}>
+              <Text style={styles.pronText}>{words?.pronunciation}</Text>
+            </View>
+          </View>
+          <View style={styles.bsDefView}>
+            <Text style={styles.bsDf}>Definition </Text>
+            <Text style={styles.bsDefinition}> {words?.definitions[0].definition}</Text>
+          </View>
+          <View style={styles.divider}>
+
+          </View>
+          <View style={styles.bsExm}>
+            <Text style={styles.bsExmText}>" {words?.definitions[0].example} "</Text>
+          </View>
+        </View>
+      )
+    }
+   
    return (
      <View style={styles.container}>
          <View style={styles.items}>
@@ -62,7 +88,7 @@
                {words?.word}
                
                </Text> : 'Loading...')}
-            <TouchableOpacity style={ styles.dot}><Image style={ styles.dotIcon} source={require('./images/dot.png')} /></TouchableOpacity>
+            <TouchableOpacity onPress={() => refRBSheet.current.open()} style={ styles.dot}><Image style={ styles.dotIcon} source={require('./images/dot.png')} /></TouchableOpacity>
             </View>
             <View style={styles.property}>
               <View style={styles.propertyOne}><Text style={styles.propertyText}>
@@ -81,9 +107,31 @@
                 </Text>           
             </View>
          </View>
+         <RBSheet
+          ref={refRBSheet}
+          height={500}
+          closeOnDragDown={true}
+          closeOnPressMask={true}
+          customStyles={{
+            wrapper: {
+             backgroundColor: 'rgba(52, 52, 52, 0.8)',
+            },
+            draggableIcon: {
+              backgroundColor: "#000"
+            },
+            container: {
+              backgroundColor: 'rgb(230, 228, 253)',
+            }
+           
+          }}
+        >
+           <BottomSheet/>
+      </RBSheet>
      </View>
    );
  };
+
+
  
  const styles = StyleSheet.create({
     container: {
@@ -145,12 +193,80 @@
     },
     wordBrief: {
       marginTop: 20,
-      maxWidth: '80%'
+      maxWidth: '90%',
+      maxHeight: 60
     },
     wordBriefText: {
       color: 'grey'
+    },
+    bsWord: {
+      fontSize: 50,
+      fontWeight: '700',
+    },
+    bottomSheet: {
+      padding: 15,
+    },
+    bsType: {
+      width: 80,
+       height: 30,
+       marginRight: 10,
+       marginTop: 10,
+       backgroundColor: 'rgb(230, 228, 253)',
+       alignItems: 'center',
+       justifyContent: 'center',
+       borderRadius: 5,
+       borderColor: 'black',
+       borderWidth: 1,
+    },
+    bsPronunciation: {
+      width: 50,
+      height: 30,
+      marginTop: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: 'black',
+      borderRadius: 5,
+    },
+    bsProps: {
+      flexDirection: 'row',
+      alignItems: 'center'
+    },
+    bsDefView: {
+      marginTop: 25,
+      flexDirection: 'row'
+    },
+    bsDefinition: {
+      fontSize: 20,
+      maxWidth: 250
+    },
+    bsDf: {
+      fontSize: 20,
+      fontStyle: 'italic',
+      opacity: 0.3
+    }, 
+    bsExm: {
+      marginTop: 30
+    },
+    bsExmText: {
+      color: '#80558C',
+      fontWeight: 'bold',
+      fontStyle: 'italic',
+      fontSize: 20
+    },
+    divider: {
+      marginLeft: 25,
+      marginTop: 30,
+      marginBottom: 10,
+      height: 1,
+      maxWidth: 300,
+      backgroundColor: 'grey',
+      opacity: 0.2
+    },
+    bsEmoji: {
+      marginLeft:155,
+      fontSize: 30
     }
-
 });
  
  export default WordCards;
