@@ -16,17 +16,19 @@ import Icon from 'react-native-vector-icons/FontAwesome';
  } from 'react-native';
  import WordCards from '../components/WordCards.js';
  import {reFreshPage} from '../components/WordCards.js';
+ import { AsyncStorage } from 'react-native';
 
  const Home = ({navigation}) => {
    const [search, setSearch] = useState(null);
    const [isLoading, setLoading] = useState(null);
    const [word, setWord] = useState(null)
-
+   const [pressed, setPressed] = useState(false)
    const OnSearch=()=>{
      console.log("called");
      setWord(search)
+     setPressed(true)
    }
-   
+
    return (
      <View style={styles.container}>
        <View style={styles.optionArea} >
@@ -39,7 +41,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
          </View>
          <View style={styles.filterOptions}>
          <TouchableOpacity style={ styles.top}><Icon name="fire" size={20} color="#6495ED" style={styles.fireIcon}/><Text style={styles.topText}>Top</Text></TouchableOpacity>
-         <TouchableOpacity style={ styles.favourites}><Icon name="heart" size={20} color="rgb(236, 106, 92)" style={styles.favouriteIcon}/><Text style={styles.favText}>Favourites</Text></TouchableOpacity>
+         <TouchableOpacity style={ styles.favourites} onPress={() => navigation.navigate('FavPage')}><Icon name="heart" size={20} color="rgb(236, 106, 92)" style={styles.favouriteIcon}/><Text style={styles.favText}>Favourites</Text></TouchableOpacity>
          </View>
          <View style={styles.searchBar}>
          <TextInput
@@ -54,7 +56,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
          </View>
        </View>
        <View style={styles.resultArea}>
-        <WordCards searchedWord={word}/>
+          <WordCards searchedWord={word}/>   
        </View>
      </View>
    );
@@ -183,7 +185,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
     height: 20,
     marginRight: 2,
    },
-
+   loadingText: {
+     marginTop: 100,
+     opacity: 0.3,
+     fontWeight: 'bold'
+   }
  
  });
  

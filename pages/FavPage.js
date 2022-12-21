@@ -24,51 +24,22 @@
  } from 'react-native';
  import RBSheet from "react-native-raw-bottom-sheet";
  import { AsyncStorage } from 'react-native';
- const WordCards = (props) => {
-   console.log("props: ",props?.searchedWord)
-   const [words, setWords] = useState(props.searchedWord);
-   const [isLoading, setLoading] = useState(false);
-   const [favClicked, setFavClicked] = useState(false);
-   const [value, setValue] = useState();
+ 
+ const FavPage = ({navigation}) => {
+    const [isLoading, setLoading] = useState(false);
+    const refRBSheet = useRef();
+    const [value, setValue] = useState()
+    const [words, setWords] = useState()
 
-   console.log('words', words);
-   const refRBSheet = useRef();
-
-   useEffect( () => {
-
-      const getWord  = async () => {
-        const res = await fetch(`https://owlbot.info/api/v4/dictionary/`+ props.searchedWord, {
-          method: 'GET',
-          headers: {
-              "Authorization": 'Token cf5dd14b9e30388005dee0f08e249f51fe7099e3',
-              "Content-Type" :'application/json'
-            }
-        })
-        setLoading(true);
-        const json = await res.json()
-        setWords(json)
-        //AsyncStorage.setItem('data', {json})
-        setLoading(false);
-  
-      }
-      getWord()
-      
-      
-    }, [props?.searchedWord]);
-
-    const saveValue = () => {
-      setFavClicked(true)
-      if(words) {
-        AsyncStorage.setItem('@favData', JSON.stringify(words))
-        console.log('Data is saved')
-      }
-      AsyncStorage.getItem('@favData')
+    const getValue = () => {
+        AsyncStorage.getItem('@favData')
         .then((value) => {
             setValue(value);
-            console.log('Async Data: ',value)
         })
-      console.log('Async Data: ',value)
     }
+    useEffect(() => {
+        getValue()
+    }, [])
 
     const BottomSheet = () => {
       return(
@@ -97,38 +68,33 @@
         </View>
       )
     }
-   
+
    return (
      <View style={styles.container}>
          <View style={styles.items}>
            <View style={styles.itemsTop}>
              {!isLoading &&  (<Text>
-               {words?.word}
+               {value?.word}
                
                </Text> : 'Loading...')}
                <View style={styles.favDot}>
-                <TouchableOpacity style={ styles.favourites} onPress={()=> saveValue()}>
-                  {favClicked ?
-                    <Icon name="heart" size={15}  style={styles.favouriteIconClicked}/> : <Icon name="heart" size={15} color="rgb(236, 106, 92)" style={styles.favouriteIcon}/>
-                  }
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => refRBSheet.current.open()} style={ styles.dot}><Image style={ styles.dotIcon} source={require('./images/dot.png')} /></TouchableOpacity>
+                <TouchableOpacity onPress={() => refRBSheet.current.open()} style={ styles.dot}><Image style={ styles.dotIcon} source={require('../components/images/dot.png')} /></TouchableOpacity>
                </View>
            
             </View>
             <View style={styles.property}>
               <View style={styles.propertyOne}><Text style={styles.propertyText}>
-                {words?.definitions[0].type}
+                {value?.definitions[0].type}
                 
                 </Text></View>
               <View style={styles.propertyTwo}><Text style={styles.propertyText}>
-                {words?.pronunciation}
+                {value?.pronunciation}
                 
                 </Text></View>
             </View>
             <View style={styles.wordBrief}>
               <Text style={styles.wordBriefText}>
-                {words?.definitions[0].definition}
+                {value?.definitions[0].definition}
                 
                 </Text>           
             </View>
@@ -155,7 +121,7 @@
       </RBSheet>
      </View>
    );
- };
+        };
 
 
  
@@ -315,4 +281,4 @@
     }
 });
  
- export default WordCards;
+ export default FavPage;

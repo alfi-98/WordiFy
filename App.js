@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './pages/Home.js'
 import WordCards from './components/WordCards.js'
-
+import FavPage from './pages/FavPage.js'
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -11,7 +11,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator 
         screenOptions={{
-        headerShown: false
+        headerShown: false  
         }}
       >
         <Stack.Screen
@@ -19,6 +19,7 @@ const App = () => {
           component={Home}
         />
         <Stack.Screen name="WordCards" component={WordCards} />
+        <Stack.Screen name="FavPage" component={FavPage}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
