@@ -24,17 +24,20 @@
  } from 'react-native';
  import RBSheet from "react-native-raw-bottom-sheet";
  import { AsyncStorage } from 'react-native';
+
+ let nextId = 0;
+
  const WordCards = (props) => {
    console.log("props: ",props?.searchedWord)
    const [words, setWords] = useState(props.searchedWord);
    const [isLoading, setLoading] = useState(false);
    const [favClicked, setFavClicked] = useState(false);
-   const [value, setValue] = useState();
-
+   const [arrayWord, setArrayWord] = useState([]);
+   
    console.log('words', words);
    const refRBSheet = useRef();
 
-   useEffect( () => {
+   useEffect(() => {
 
       const getWord  = async () => {
         const res = await fetch(`https://owlbot.info/api/v4/dictionary/`+ props.searchedWord, {
@@ -51,15 +54,17 @@
         setLoading(false);
       }
       getWord()
-      setFavClicked(false)
-      
-      
+      setFavClicked(false) 
     }, [props?.searchedWord]);
 
     const saveValue = () => {
       setFavClicked(true)
       if(words) {
-        AsyncStorage.setItem('@favData', JSON.stringify(words))
+        arrayWord.push({
+          id: nextId++,
+          data: words,
+        })
+        AsyncStorage.setItem('@favData', JSON.stringify(arrayWord))
         //console.log('Data is saved')
         AsyncStorage.getItem('@favData')
         .then((value) => {
@@ -67,12 +72,10 @@
             console.log("saved data: ",value)
         })
       }
-      
     }
 
     const BottomSheet = () => {
       return(
-        
         <View style={styles.bottomSheet}>
           <Text style={styles.bsEmoji}> {words?.definitions[0].emoji} </Text>
           <Text style={styles.bsWord}>{words?.word}</Text>
@@ -104,7 +107,6 @@
            <View style={styles.itemsTop}>
              {!isLoading &&  (<Text>
                {words?.word}
-               
                </Text> : 'Loading...')}
                <View style={styles.favDot}>
                 <TouchableOpacity style={ styles.favourites} onPress={()=> saveValue()}>

@@ -54,13 +54,17 @@
     if(!isLoading){
       return (
         <View style={styles.container}>
+           {words.map(word => (
+       
           <View style={styles.favContainer}>
             <View  style={styles.favItem}>
-              <View style={styles.circle}><Text style={styles.circleText}>{words.word[0]}</Text></View>
-              <Text>{words.word}</Text>
+              <View style={styles.circle}><Text style={styles.circleText} key={word.id}>{word.data.word[0]}</Text></View>
+              <Text key={word.id}>{word.data.word}</Text>
             </View>
            
           </View>
+           ))}
+          
           
         </View>
       )
