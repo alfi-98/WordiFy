@@ -11,6 +11,10 @@ This is a Dictionary app which is built using React Native
 ### 📋 App Design:
 
 
-https://user-images.githubusercontent.com/66726759/208604177-7670e7a1-6c86-4425-9c16-98b3bc942893.mov
+
+https://user-images.githubusercontent.com/66726759/209537707-0b309834-187f-4f34-801b-a7e1a5512e6f.mov
+
+
+
 
 <img width="231" alt="Screenshot 2022-12-20 at 12 56 26 PM" src="https://user-images.githubusercontent.com/66726759/208604224-2126c4dc-0dae-45da-8678-68dade6cfde1.png"><img width="231" alt="Screenshot 2022-12-20 at 12 57 05 PM" src="https://user-images.githubusercontent.com/66726759/208604227-b477acd8-dd30-46c3-922b-e03de3b758c5.png">
