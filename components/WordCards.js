@@ -47,11 +47,11 @@
         setLoading(true);
         const json = await res.json()
         setWords(json)
-        //AsyncStorage.setItem('data', {json})
+        console.log("JSON words: ",words)
         setLoading(false);
-  
       }
       getWord()
+      setFavClicked(false)
       
       
     }, [props?.searchedWord]);
@@ -60,14 +60,14 @@
       setFavClicked(true)
       if(words) {
         AsyncStorage.setItem('@favData', JSON.stringify(words))
-        console.log('Data is saved')
-      }
-      AsyncStorage.getItem('@favData')
+        //console.log('Data is saved')
+        AsyncStorage.getItem('@favData')
         .then((value) => {
-            setValue(value);
-            console.log('Async Data: ',value)
+
+            console.log("saved data: ",value)
         })
-      console.log('Async Data: ',value)
+      }
+      
     }
 
     const BottomSheet = () => {
