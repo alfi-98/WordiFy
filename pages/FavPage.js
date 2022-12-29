@@ -6,7 +6,7 @@
  * @format
  * @flow strict-local
  */
- import Icon from 'react-native-vector-icons/FontAwesome';
+ import Icon from 'react-native-vector-icons/Ionicons';
  import React, {useState,useEffect, useRef} from 'react';
  import type {Node} from 'react';
  import {
@@ -29,6 +29,7 @@
     const [isLoading, setLoading] = useState(true);
     const refRBSheet = useRef();
     const [words, setWords] = useState("")
+    const [data, setData] = useState([])
     useEffect( () => {
         AsyncStorage.getItem('@favData')
         .then((value) => {
@@ -41,25 +42,31 @@
             //setLoading(false);
         }) 
         console.log("Word Data: ", words)
-        /*if(words){
-          let data = JSON.parse(words);
-          console.log(data.word)
-          setWords(data)
-          console.log(words.word)
 
-        }*/
+        fetch("http://192.168.68.106:4000/")
+        .then(res => res.json())
+        .then(results => {
+          console.log(results)
+          setData(results)
+          //setLoading(false)
+        })
 
     }, [])
+ 
 
     if(!isLoading){
       return (
+     
         <View style={styles.container}>
+          <View style={styles.test}>
+            <TouchableOpacity onPress={() => navigation.goBack()}><Icon name="ios-arrow-back-outline" size={25}  style={styles.favouriteIconClicked}/></TouchableOpacity>
+          </View>
            {words.map(word => (
        
           <View style={styles.favContainer}>
             <View  style={styles.favItem}>
               <View style={styles.circle}><Text style={styles.circleText} key={word.id}>{word.data.word[0]}</Text></View>
-              <Text key={word.id}>{word.data.word}</Text>
+              <Text key={word.id} style={styles.wordText}>{word.data.word}</Text>
             </View>
            
           </View>
@@ -77,11 +84,10 @@
  const styles = StyleSheet.create({
   container: {
     height: '100%',
-    alignItems: 'center',
     padding: 20,
     marginBottom: 10,
     backgroundColor: 'rgb(246, 247, 249)',
-  },
+    alignItems: 'flex-start',  },
   favContainer: {
     width: 350,
     height: 60,
@@ -97,7 +103,7 @@
     
   },
   circle: {
-    backgroundColor: '#A7C7E7',
+    backgroundColor: 'rgb(247, 239, 230)',
     width: 25,
     height: 25 ,
     borderRadius: 15,
@@ -114,10 +120,89 @@
 
   },
   circleText: {
-    color: '#6495ED',
-    fontWeight: 'bold'
-  }
-    
+    color: '#CD853F',
+    fontWeight: 'bold',
+  },
+  wordText: {
+    fontSize: 16,
+  },
+  test: {
+    marginTop: 50,
+    marginBottom: 20
+  },
+  dotIcon:{
+    width: 20,
+    height: 20,
+    marginRight: 15,
+   },
+   bsWord: {
+    fontSize: 50,
+    fontWeight: '700',
+  },
+  bottomSheet: {
+    padding: 15,
+  },
+  bsType: {
+    width: 80,
+     height: 30,
+     marginRight: 10,
+     marginTop: 10,
+     backgroundColor: 'rgb(230, 228, 253)',
+     alignItems: 'center',
+     justifyContent: 'center',
+     borderRadius: 5,
+     borderColor: 'black',
+     borderWidth: 1,
+  },
+  bsPronunciation: {
+    width: 50,
+    height: 30,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
+  },
+  bsProps: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  bsDefView: {
+    marginTop: 25,
+    flexDirection: 'row'
+  },
+  bsDefinition: {
+    fontSize: 20,
+    maxWidth: 250
+  },
+  bsDf: {
+    fontSize: 20,
+    fontStyle: 'italic',
+    opacity: 0.3
+  }, 
+  bsExm: {
+    marginTop: 30
+  },
+  bsExmText: {
+    color: '#80558C',
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+    fontSize: 20
+  },
+  divider: {
+    marginLeft: 25,
+    marginTop: 30,
+    marginBottom: 10,
+    height: 1,
+    maxWidth: 300,
+    backgroundColor: 'grey',
+    opacity: 0.2
+  },
+  bsEmoji: {
+    marginLeft:155,
+    fontSize: 30
+  },
 });
  
  export default FavPage;

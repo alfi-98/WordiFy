@@ -72,6 +72,25 @@
             console.log("saved data: ",value)
         })
       }
+
+      return fetch("http://192.168.68.106:4000/send-data", {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type' : 'application/json'
+        },
+        body:JSON.stringify({
+          wordName: words?.word,
+          pronunciation: words?.pronunciation == null ? " " : words?.pronunciation
+        })
+      }).then(res => res.json())
+      .then(data => {
+        console.log(data)
+      }).catch(err => {
+        console.log(err)
+      })
+
+      
     }
 
     const BottomSheet = () => {
@@ -100,7 +119,9 @@
         </View>
       )
     }
-   
+    if(words === null){
+      return <View  style={styles.loading}><Text>loading...</Text></View>
+    }
    return (
      <View style={styles.container}>
          <View style={styles.items}>
@@ -162,6 +183,9 @@
 
  
  const styles = StyleSheet.create({
+  loading: {
+    marginTop: 50
+  },
     container: {
         width: 350,
         height: 150,
