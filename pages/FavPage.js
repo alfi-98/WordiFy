@@ -20,7 +20,7 @@
    TouchableOpacity,
    Image,
    TextInput, 
-   ActivityIndicator,Button
+   ActivityIndicator,Button,FlatList
  } from 'react-native';
  import RBSheet from "react-native-raw-bottom-sheet";
  import { AsyncStorage } from 'react-native';
@@ -52,26 +52,32 @@
         })
 
     }, [])
+
+    const renderList = ({item}) => {
+      return(
+        <View style={styles.favContainer}>
+            <View  style={styles.favItem}>
+              <View style={styles.circle}><Text style={styles.circleText} key={item._id}>{item.wordName[0]}</Text></View>
+              <Text key={item._id} style={styles.wordText}>{item.wordName}</Text>
+            </View>
+           
+          </View>
+      )
+      
+    };
  
 
     if(!isLoading){
-      return (
-     
+      return ( 
         <View style={styles.container}>
           <View style={styles.test}>
             <TouchableOpacity onPress={() => navigation.goBack()}><Icon name="ios-arrow-back-outline" size={25}  style={styles.favouriteIconClicked}/></TouchableOpacity>
           </View>
-           {words.map(word => (
-       
-          <View style={styles.favContainer}>
-            <View  style={styles.favItem}>
-              <View style={styles.circle}><Text style={styles.circleText} key={word.id}>{word.data.word[0]}</Text></View>
-              <Text key={word.id} style={styles.wordText}>{word.data.word}</Text>
-            </View>
-           
-          </View>
-           ))}
-          
+           <FlatList
+            data = {data}
+            renderItem = {renderList}
+            keyExtractor = {item => item._id}
+           />
           
         </View>
       )
