@@ -23,10 +23,11 @@ mongoose.connection.on("error", (err) => {
 })
 
 app.post('/delete', (req, res)=>{
+    console.log("got id: ", req.body._id)
     Word.findByIdAndRemove(req.body._id)
     .then(data => {
-        console.log(data)
-        res.send("delete")
+        console.log("to be deleted... ", data)
+        res.send(data)
     }).catch(err => {
         console.log("error", err)
     })

@@ -73,7 +73,7 @@
         })
       }
 
-      return fetch("http://192.168.68.106:4000/send-data", {
+      return fetch("http://192.168.68.104:4000/send-data", {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -90,7 +90,6 @@
         console.log(err)
       })
 
-      
     }
 
     const BottomSheet = () => {

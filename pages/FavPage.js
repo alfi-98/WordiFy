@@ -7,6 +7,7 @@
  * @flow strict-local
  */
  import Icon from 'react-native-vector-icons/Ionicons';
+ import IconM from 'react-native-vector-icons/MaterialIcons';
  import React, {useState,useEffect, useRef} from 'react';
  import type {Node} from 'react';
  import {
@@ -30,6 +31,9 @@
     const refRBSheet = useRef();
     const [words, setWords] = useState("")
     const [data, setData] = useState([])
+    const [deleted, setDelete] = useState("no")
+
+
     useEffect( () => {
         AsyncStorage.getItem('@favData')
         .then((value) => {
@@ -37,21 +41,20 @@
             setWords(JSON.parse(value));
             setLoading(false);
           }
-          console.log("recieved data: ", value)
-            
+          console.log("recieved data: ", value)            
             //setLoading(false);
         }) 
         console.log("Word Data: ", words)
 
-        fetch("http://192.168.68.106:4000/")
+        fetch("http://192.168.68.104:4000/")
         .then(res => res.json())
         .then(results => {
           console.log(results)
           setData(results)
-          //setLoading(false)
+          setLoading(false)
+          setDelete("no")
         })
-
-    }, [])
+    }, [deleted])
 
     const renderList = ({item}) => {
       return(
@@ -60,11 +63,35 @@
               <View style={styles.circle}><Text style={styles.circleText} key={item._id}>{item.wordName[0]}</Text></View>
               <Text key={item._id} style={styles.wordText}>{item.wordName}</Text>
             </View>
+            <View style={styles.deleteIcon}>
+              <TouchableOpacity onPress={() => deleteWord(item._id)}> 
+              <IconM name="delete-forever" size={25} color="#CD853F" style={styles.deleteIcon}/>
+              </TouchableOpacity>
+            </View>
            
           </View>
       )
       
     };
+
+    const deleteWord = (props) => {
+      console.log("word to be deleted", props)
+      fetch("http://192.168.68.104:4000/delete", {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json'
+        },
+        body:JSON.stringify({
+          _id : props
+        })
+      }).then(res => res.json())
+      .then(deleteWord => {
+        setDelete("yes")
+        console.log(`${deleteWord} deleted`)
+      }).catch(err => {
+        console.log(err)
+      })
+    }
  
 
     if(!isLoading){
@@ -77,15 +104,12 @@
             data = {data}
             renderItem = {renderList}
             keyExtractor = {item => item._id}
-           />
-          
+           />   
         </View>
       )
     }
-    return <View><Text>'Loading..'</Text></View>
-
-
-    };
+    return <View  style={styles.lodingView}><Text>'Loading..'</Text></View>
+  };
 
  const styles = StyleSheet.create({
   container: {
@@ -98,15 +122,18 @@
     width: 350,
     height: 60,
     backgroundColor: 'white',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 10,
     borderRadius: 10,
     shadowOffset: {width: 0, height: 0},  
     shadowColor: '#171717',  
     shadowOpacity: 0.1,  
     shadowRadius: 5,
-    
+  },
+  deleteIcon: {
+    marginRight: 10,
   },
   circle: {
     backgroundColor: 'rgb(247, 239, 230)',
@@ -123,7 +150,6 @@
     alignItems: 'center',
     marginLeft: 10,
     maxWidth: '80%',
-
   },
   circleText: {
     color: '#CD853F',
@@ -209,6 +235,11 @@
     marginLeft:155,
     fontSize: 30
   },
+  lodingView: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });
  
  export default FavPage;
