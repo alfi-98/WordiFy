@@ -33,20 +33,8 @@
     const [data, setData] = useState([])
     const [deleted, setDelete] = useState("no")
 
-
     useEffect( () => {
-        AsyncStorage.getItem('@favData')
-        .then((value) => {
-          if(value !== null){
-            setWords(JSON.parse(value));
-            setLoading(false);
-          }
-          console.log("recieved data: ", value)            
-            //setLoading(false);
-        }) 
-        console.log("Word Data: ", words)
-
-        fetch("http://192.168.68.104:4000/")
+        fetch("http://192.168.68.113:4000/")
         .then(res => res.json())
         .then(results => {
           console.log(results)
@@ -70,13 +58,12 @@
             </View>
            
           </View>
-      )
-      
+      ) 
     };
 
     const deleteWord = (props) => {
       console.log("word to be deleted", props)
-      fetch("http://192.168.68.104:4000/delete", {
+      fetch("http://192.168.68.113:4000/delete", {
         method: 'POST',
         headers: {
           'Content-Type' : 'application/json'
@@ -92,7 +79,6 @@
         console.log(err)
       })
     }
- 
 
     if(!isLoading){
       return ( 

@@ -9,7 +9,7 @@ app.use(bodyParser.json())
 
 mongoose.set("strictQuery", false);
 
-const mongoURI = "mongodb+srv://alfi-98:alfi19101045@cluster0.casxshc.mongodb.net/?retryWrites=true&w=majority"
+const mongoURI = "mongodb+srv://alfi-98:al**19**10**@cluster0.casxshc.mongodb.net/?retryWrites=true&w=majority"
 mongoose.connect(mongoURI, {
     
 })

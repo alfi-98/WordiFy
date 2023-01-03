@@ -64,16 +64,9 @@
           id: nextId++,
           data: words,
         })
-        AsyncStorage.setItem('@favData', JSON.stringify(arrayWord))
-        //console.log('Data is saved')
-        AsyncStorage.getItem('@favData')
-        .then((value) => {
-
-            console.log("saved data: ",value)
-        })
       }
 
-      return fetch("http://192.168.68.104:4000/send-data", {
+      return fetch("http://192.168.68.113:4000/send-data", {
         method: 'POST',
         headers: {
           Accept: 'application/json',
